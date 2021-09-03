@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/ICSE2022-887/WASAI/.misc/logo.png" width="40%" /><br/>
+  <img src="https://github.com/ICSE2022-887/WASAI/blob/main/logo.png" width="40%" /><br/>
 </p>
 <p align="center">
 WASAI

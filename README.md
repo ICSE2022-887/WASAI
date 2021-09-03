@@ -1,8 +1,6 @@
 <p align="center">
   <img src="https://github.com/ICSE2022-887/WASAI/blob/main/logo.png" width="60%" /><br/>
 </p>
-<p align="center">
-WASAI
 </p>
 
 ## ℹ️ Introductions
@@ -59,7 +57,8 @@ python -m bin.fuzz <wasmPath> <abiPath> <contractName> <timeout> <fuzzCnt> <save
 
 3.   benchmark
 
-     `https://drive.google.com/file/d/11U0yF0eVekhFIiHOe-xSWDA2wXCwxOay/view?usp=sharing`
+     `https://drive.google.com/file/d/11U0yF0eVekhFIiHOe-xSWDA2wXCwxOay/view?usp=sharing` &&
+     `https://github.com/gongbell/EOSFuzzer/tree/master/dataset/binaryContracts`
 
 ## 🙆 Authors
 

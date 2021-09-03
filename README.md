@@ -7,9 +7,9 @@ WASAI
 
 ## ℹ️ Introductions
 
-WebAssembly (Wasm) smart contracts have shown growing popularity across blockchains (e.g., EOSIO) in recent years.  We propose {\tool}, a concolic fuzzer for identifying vulnerabilities in Wasm smart contracts, taking EOSIO as the mainly Wasm favored blockchain. In particular, {\tool} builds symbolic constraints along the execution traces of smart contracts and solves them to guide the fuzzing. 
+WebAssembly (Wasm) smart contracts have shown growing popularity across blockchains (e.g., EOSIO) in recent years.  We propose WASAI, a concolic fuzzer for identifying vulnerabilities in Wasm smart contracts, taking EOSIO as the mainly Wasm favored blockchain. In particular, WASAI builds symbolic constraints along the execution traces of smart contracts and solves them to guide the fuzzing. 
 
-The experimental results on code coverage demonstrate that {\tool} obtains about 2x of that baselines gets. On the well-labelled benchmarks, {\tool} outperforms all baselines in detecting vulnerabilities, with an F1-measure of 99.2\%. Moreover, {\tool} is robust enough to remain 96.0\% F1-measure in analyzing the hard-to-detect benchmark. 
+The experimental results on code coverage demonstrate that WASAI obtains about 2x of that baselines gets. On the well-labelled benchmarks, WASAI outperforms all baselines in detecting vulnerabilities, with an F1-measure of 99.2\%. Moreover, WASAI is robust enough to remain 96.0\% F1-measure in analyzing the hard-to-detect benchmark. 
 
 ## ✳️ Features
 

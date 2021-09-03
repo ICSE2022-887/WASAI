@@ -21,7 +21,7 @@ The experimental results on code coverage demonstrate that WASAI obtains about 2
 ```
 |-- fuzz_benchmark.py               large scale analysis 
 |—— bin                          
-| |—— fuzz.py             			entry file
+| |—— fuzz.py             			    entry file
 | |—— complicatedVerification.py    RQ3-1
 | |—— reduceCov.py                  RQ3-2
 |—— symzzer         
@@ -29,11 +29,11 @@ The experimental results on code coverage demonstrate that WASAI obtains about 2
 | |—— argumentFactory.py            generate seeds
 | |—— logAnalyzer.py                feedback
 | |-- tainter
-| | |-- analysis.py					constratins generation
-| | |-- wasabiHooker.py				engine hooks
-| | |-- emulator.py					symbolic execution engine
-| | |-- memory.py					memory model
-| | |-- opcodes.py					opcode table
+| | |-- analysis.py					        constratins generation
+| | |-- wasabiHooker.py			      	engine hooks
+| | |-- emulator.py					        symbolic execution engine
+| | |-- memory.py			          		memory model
+| | |-- opcodes.py					        opcode table
 | | |-- utils.py					
 | |-- setting.py
 | |-- utils.py

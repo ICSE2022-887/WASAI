@@ -1,9 +1,11 @@
+# WASAI ![Status](https://img.shields.io/badge/Build-Fail-red)
+
 <p align="center">
   <img src="https://github.com/ICSE2022-887/WASAI/blob/main/logo.png" width="60%" /><br/>
 </p>
 </p>
 
-## ℹ️ Introductions
+## ℹ️ Introductions 
 
 WebAssembly (Wasm) smart contracts have shown growing popularity across blockchains (e.g., EOSIO) in recent years.  We propose WASAI, a concolic fuzzer for identifying vulnerabilities in Wasm smart contracts, taking EOSIO as the mainly Wasm favored blockchain. In particular, WASAI builds symbolic constraints along the execution traces of smart contracts and solves them to guide the fuzzing. 
 

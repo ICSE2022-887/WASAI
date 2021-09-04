@@ -46,6 +46,7 @@ The experimental results on code coverage demonstrate that WASAI obtains about 2
 ```bash
 # python3.6.9
 python3 -m venv ./
+activate ./venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
 

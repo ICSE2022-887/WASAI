@@ -1,5 +1,4 @@
 # WASAI ![Status](https://img.shields.io/badge/Build-Fail-red)
-
 <p align="center">
   <img src="https://github.com/ICSE2022-887/WASAI/blob/main/logo.png" width="60%" /><br/>
 </p>

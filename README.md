@@ -59,7 +59,7 @@ python -m bin.fuzz <wasmPath> <abiPath> <contractName> <timeout> <fuzzCnt> <save
 
 3.   benchmark
 
-     `https://drive.google.com/file/d/11U0yF0eVekhFIiHOe-xSWDA2wXCwxOay/view?usp=sharing` &&
+     `https://drive.google.com/file/d/1z1rd3o0o6zoYVNcKXpnHWqDLn4EwdcP-/view?usp=sharing` &&
      `https://github.com/gongbell/EOSFuzzer/tree/master/dataset/binaryContracts`
 
 ## 🙆 Authors

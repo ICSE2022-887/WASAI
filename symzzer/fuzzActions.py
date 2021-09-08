@@ -53,11 +53,9 @@ def executeCommand(arguments, mustExecute = False):
 
 
 def createAccount(name, publicKey, mustExecute = False):
-    #executeCommand(setting.cleosExecutable + ' create account eosio ' + name + ' ' + publicKey, mustExecute)
     executeCommand([setting.cleosExecutable, 'create', 'account', 'eosio', name, publicKey], mustExecute)
 
 def setContract(name, contractAddress, permission, mustExecute = False):
-    #executeCommand(setting.cleosExecutable + ' set contract ' + name + ' ' + contractAddress, mustExecute)
     executeCommand([setting.cleosExecutable, 'set', 'contract', name, contractAddress, '-p', permission], mustExecute=mustExecute)
 
 def pushAction(contract, action, arguments, permission, mustExecute = False):
@@ -82,14 +80,7 @@ def initEosEnv():
     # init EOS environment & deploy contract
     os.system('killall nodeos')
     os.system('killall keosd')  
-    # while True:
-    #     os.system('killall nodeos')
-    #     os.system('killall keosd')
-    #     _, out1 = subprocess.getstatusoutput("ps -x|grep nodeos |grep -v grep| awk '{print $2}'| wc -l")
-    #     _, out2 = subprocess.getstatusoutput("ps -x|grep keosd |grep -v grep| awk '{print $2}' | wc -l")
-    #     # print(out1, out2)
-    #     # if out1 == '0' and out2 == '0':
-    #     break
+
 
     os.system('keosd --max-body-size 100000000 &')
     os.system('rm -rf ' + setting.eosFilePath)
@@ -111,8 +102,6 @@ def initEosEnv():
                             --genesis-json genesis.json \
                             >> nodeos.log 2>&1 &')
     time.sleep(2)
-    # exit(0)
-    
 
     # createAccount('clerk', setting.eosioTokenPublicKey, True)
     createAccount('eosio.token', setting.eosioTokenPublicKey, True)
@@ -135,8 +124,7 @@ def initEosEnv():
     pushAction('fake.token', 'issue', '["fakeosio", "20000000000000.0000 EOS",""]', 'fakeosio@active', True)
     
     pushAction('eosio.token', 'transfer', '["eosio","fakeosio","10000000.0000 EOS",""]', 'eosio@active', True)
-    # pushAction('fake.token', 'transfer', '["e","fakeosio","10000000.0000 EOS",""]', 'eosio@active', True)
-    
+
     createAccount('testeosfrom', setting.eosioTokenPublicKey, True)
     addCodePermission('testeosfrom', True)
     pushAction('eosio.token', 'transfer', '["eosio","testeosfrom","10000000.0000 EOS",""]', 'eosio@active', True)
@@ -156,9 +144,6 @@ def initEosEnv():
     setContract('atknoti', setting.atknotiContract, 'atknoti@active', True)
     addCodePermission('atknoti', True)
 
-    # createAccount('atkrero', setting.eosioTokenPublicKey, True)
-    # setContract('atkrero', setting.atkreroContract, 'atkrero@active', True)
-    # addCodePermission('atkrero', True)
 
     if setting.useAccountPool:
         createAccount('fuzzacc1', aPublicKey, True)
@@ -168,7 +153,6 @@ def initEosEnv():
 
     # init contract
     pathContract =  setting.pathHookContract + setting.contractName
-    # os.system('eosio-cpp -o ' + setting.contractName+'.wasm' + ' ' + pathContract+'.cpp' + ' -DCONTRACT_NAME=\\"' + setting.contractName + '\\"')
 
     createAccount(setting.contractName, setting.aPublicKey)
     addCodePermission(setting.contractName)
@@ -187,7 +171,6 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
     # init eosio platform
     initEosEnv() 
 
-    # locate eosponser 我们只分析涉及到 eos 的合约
     os.system(f'rm -r {setting.logPath}* ; rm {setting.plogPath}')
     pushAction('eosio.token', 'transfer', '[ "testeosfrom", "' + setting.contractName + '","100.0000 EOS","FUZZER"]', 'testeosfrom@active', mustExecute=True)
     
@@ -196,15 +179,13 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
     with open(f"{setting.pathHookContract}/actPartly.txt", 'w') as f:
         f.write( str(feedbackFactory.applyFuncId) + " " + str(feedbackFactory.transferEntry))
 
-    # return False
-
     acceptEOSToken = False
     isFixForgedBug = False
     rejectFakeos = list()
     pmSafeActs = list()
 
     # fuzzing
-    candidateKinds = [0, 1, 2, 3, 4]# [0, 0, 0, 0, 0, 1, 1, 2, 2, 1, 2, 3, 4]
+    candidateKinds = [0, 1, 2, 3, 4]
     '''
     0: invoke one action of S
     1: fake notification payload
@@ -212,6 +193,7 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
     3: fake EOS payload.2
     4: transfer valid EOS
     '''
+
     idxPeriod = 0
     kind = 0
 
@@ -228,10 +210,6 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
             kind = 0
         else:
             kind = random.choice(candidateKinds)
-
-        # kind = 3 if idxPeriod == 1 else candidateKinds[idxPeriod%len(candidateKinds)]
-        # kind = 2 if idxPeriod == 2 else candidateKinds[idxPeriod%len(candidateKinds)]
-        # kind = 1 if idxPeriod == 3 else candidateKinds[idxPeriod%len(candidateKinds)]
 
         if setting.isChkOOB == FFMODE:
             kind = random.choice([0, 4])
@@ -262,10 +240,6 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
                     if fs != []:
                         _fc = random.choice(fs)
         
-        # kind = 0
-        # _fc = "test"
-        # =======================================
-
         # 2. generate cleos command
         testDataFactory.generateNewData(_fc, kind)
         currentFuncName = testDataFactory.functionName
@@ -273,26 +247,15 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
         testDataFactory.generateNewDataType(currentFuncName)
         
         fbSeed = feedbackFactory.seeds(kind, currentFuncName)
-
-        # if fbSeed == []:
-        #     testArgumentStr = testDataFactory.testArgument
-        #     feedbackFactory.seedDict[(kind, currentFuncName)].append(newSeed)
-
-        # else:
-        #     testArgumentStr = json.dumps(fbSeed) 
-
-        
         testArgumentStr = json.dumps(fbSeed) if fbSeed != [] else testDataFactory.testArgument
 
         # 3. execute cleos
-
         os.system(f"rm {setting.logPath}/* ; rm {setting.plogPath}")
 
         cmd = ' '.join(['cleos', 'push', 'action', testDataFactory.executedContractName,
                  currentFuncName, '\'' + testArgumentStr + '\'', '-p', f'{testDataFactory.activeAccount}@active'])
         
         logger.info(cmd)  
-        # cmd = in_cmd
         feedbackFactory.cmds.append(cmd)
 
         PriBalance = getCurrency(setting.contractName, 'eosio.token')
@@ -312,8 +275,6 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
         
         if os.listdir(setting.logPath):
             setting.timePoints.append((int(sorted(os.listdir(setting.logPath), key=lambda fname: int(fname[4:-4]))[0][4:-4]), time.time()))
-        # print('[----------] executed cmd:', out, '@@@')
-        # print('\n'*5)
 
         os.system(f'cp {setting.logPath}/* {setting.pathHookContract}/rLogs/') # for coverage
             
@@ -323,7 +284,6 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
             return False
         if 'Duplicate transaction' in out or 'Expired Transaction' in out:
             continue
-
 
         # 4. deserialize logs
         if not feedbackFactory.processLog('Error' not in out):
@@ -336,21 +296,6 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
                 return True
 
             continue
-
-        if setting.isChkOOB != DISABLE and kind == 0 and 'out of bounds memory access' in out:
-            setting.bugSet.append(3)
-            return True
-            # print(feedbackFactory.firstActLog[-1])
-            atkFID, atkOffset, atkClen = in_atk
-            # print(feedbackFactory.firstActLog[-1], '============', atkFID)
-            func, offset = feedbackFactory.firstActLog[-1][2][:2]
-            if func != atkFID:
-                continue
-            elif func == atkFID and offset == atkOffset + atkClen - 1:# crach with OUT OF BRAND
-                return True
-
-        # extract info from logs
-
         try:
             feedbackFactory.locateActionPos(index=0, txFuncName=currentFuncName)  # also collect information for first action
         except :
@@ -362,23 +307,16 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
         with open(f"{setting.pathHookContract}/pLogs/{idxPeriod}_{kind}.json", 'w') as f:
             json.dump([logTuple, testDataFactory.testArgumentType, json.loads(testArgumentStr), cmd], f)
 
-   
-
         if setting.detectVul:
-            # the detectors
             try:
                 if setting.isChkPems != DISABLE and 6 not in setting.bugSet:
                     if feedbackFactory.authCheckFault():
                         logging.info("permission check fault")
                         setting.bugSet.append(6)
-
                         # fast mode
                         if setting.isChkPems == FFMODE:
                             return True
-                    # else:
-                    #     pmSafeActs.append(currentFuncName)
-                    #     if len(pmSafeActs) == len(testDataFactory.abi.actionNames):
-                    #         return False
+ 
 
                 if setting.isBlockinfoDep != DISABLE and 7 not in setting.bugSet:
                     if feedbackFactory.usedTaposFunctionThenEosioTokenTransfer():
@@ -409,18 +347,8 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
                             return True
 
                 if setting.isFakeNot != DISABLE and isFixForgedBug == False and kind == 1:
-                    '''
-                    if idxPeriod > 100:
-                        # did't find a protection 
-                        logger.info("Fake Notification: did't touch protection")
-                        setting.bugSet.append(1)
-
-                        if setting.isFakeNot == FFMODE:
-                            return True
-                    '''
                     
                     _magic = feedbackFactory.checkForgedNotificationBug(testDataFactory.forgedNotificationAgentName, contractName, isExecuted)
-                    # print('[-] fake notification detector begins~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', _magic)
                     if _magic == 0:
                         isFixForgedBug = True
                         setting.bugSet.append(-11)
@@ -441,26 +369,9 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
 
                     if setting.isFakeEos == FFMODE:
                         return True
-            
 
-                # elif setting.isFakeEos != DISABLE and kind == 2 and 2 not in setting.bugSet:
-                #     if feedbackFactory.hasFakeTransferBug():
-                #         logger.info(f"Has fake transfer bug;Fake EOS kind={kind}")
-                #         setting.bugSet.append(2)
-                #         if setting.isFakeEos == FFMODE:
-                #             return True
-
-                # elif setting.isFakeEos != DISABLE and kind == 3 and 3 not in setting.bugSet:
-                #     acceptEOSToken = feedbackFactory.hasFakeTransferBug()
-                #     if acceptEOSToken:
-                #         logger.info(f"Has fake transfer bug;Fake EOS kind={kind}")
-                #         setting.bugSet.append(3)
-                #         if setting.isFakeEos == FFMODE:
-                #             return True
             except:
                 print('[-] Scanner Error')
-        # if kind == 1:
-        #     exit(0)
 
             
         if True and (kind == 0 or (kind in (1, 4) and feedbackFactory.transferEntry == feedbackFactory.caseInfo[2])):
@@ -484,16 +395,9 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
             # print("[-] fuzzActions.wasabiInput::", actionLog)
             for line in actionLog:
                 try:
-                    # if wasabi.analysis.timeoutCnt >= 4:
-                    #     break
                     _, instr, args, types = line
-                    # print("--debug:logAll:--", instr, args, types,"STACK",wasabi.analysis.stack.peek(), cmd)
-                    # print('-actFuzzer: args=',args)
                     symArgs = taintutils.buildArgs(instr, args, types)
-                    # print('-actFuzzer: symArgs=',symArgs)
-                    # print("[-] wasabi hook-begin")
                     wasabi.lowlevelHooks(instr, symArgs)
-                    # print("[-] wasabi hook-end")
 
                 except Exception as e:
                     print('[-] EOSVM Model ERROR:', e)
@@ -535,7 +439,6 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
                 if location in feedbackFactory.touchedBrs[(kind, currentFuncName)]:
                     continue
 
-                # print('[+] New Seed Tuple:', argPos, value, seeds)
                 seed = cleosJson.copy()
                 layout_o, layout_i = argPosTuple
 
@@ -555,14 +458,10 @@ def fuzz(contractABI, feedbackFactory, in_atk=()):
                 newSeed = (location, seed)
                 feedbackFactory.seedDict[(kind, currentFuncName)].append(newSeed)
                 feedbackFactory.touchedBrs[(kind, currentFuncName)].add(location)
-                # print(json.dumps(seed))
-                # print(feedbackFactory.seedDict[currentFuncName])
-                # exit()
                 print('[+] newSeed generated:', newSeed)
         
             print('[+++++++++++] ============ runtime debug ================')
             for cmd in feedbackFactory.seedDict[(kind, currentFuncName)]:
                 print("[+] seed Pools:", cmd, '\n')
-            # exit()
      
     return True
